@@ -2,6 +2,8 @@
 
 Reference-built speaker model and standalone browser review, 30 October 2026.
 
+**Repository upload status: incomplete.** This README is present, but GitHub rejected the binary upload commit. The GLB and viewer/source/reference package are not yet in this folder. The instructions and inventory below describe the prepared package, not files already available here. Use the private review link to inspect the existing model.
+
 ## View and download
 
 Private owner-only review: https://files.instinct.com/4fn6vkgkckz2-your-speaker-in-3d

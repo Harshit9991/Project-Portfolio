@@ -2,8 +2,6 @@
 
 Reference-built speaker model and standalone browser review, 30 October 2026.
 
-**Repository upload status: incomplete.** This README is present, but GitHub rejected the binary upload commit. The GLB and viewer/source/reference package are not yet in this folder. The instructions and inventory below describe the prepared package, not files already available here. Use the private review link to inspect the existing model.
-
 ## View and download
 
 Private owner-only review: https://files.instinct.com/4fn6vkgkckz2-your-speaker-in-3d
@@ -46,6 +44,8 @@ The model does not use photo textures. No reflected person or phone is baked int
 Speaker pickup/putdown and music remain future work. The proposed volume choices are Low / Medium / High, not continuous control based on the dial numerals. No music files, music licences, logo integration, table scene, room implementation or production deployment are included. The Edith Finch direction is parked. The planned immersive portfolio is laptop-only; this asset review is not a tested full-room performance target.
 
 ## Files
+
+All files below are available directly in this folder. `speaker-source-and-references.zip` is an optional complete portable copy; it preserves the same filenames under its `Pixbeat_Speaker` directory.
 
 - `speaker-reference-v2.glb`: latest reusable model.
 - `generate_speaker.py`, `requirements.txt`: procedural geometry/export source.

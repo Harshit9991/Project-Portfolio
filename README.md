@@ -1,8 +1,8 @@
 # Project: Portfolio
 
-An idea archive for a second, immersive personal website. Nothing here is built yet. This repo keeps the ideas, decisions and open questions so none get lost.
+An idea archive for a second, immersive personal website. The first object has a standalone 3D review model; the immersive site is not built yet. This repo keeps the ideas, decisions and open questions so none get lost.
 
-Last updated: 29 October 2026.
+Last updated: 30 October 2026.
 
 ## The idea
 
@@ -20,7 +20,7 @@ A separate site for people who want to spend time getting to know who Harshit is
 - The art style is not chosen yet.
 - Real objects from his life are a strong direction: digitise them and make them interactable.
 - He may pay for a domain later. No domain has been chosen or bought.
-- This repo is public. Ideas only: no site code, deployment or domain work has been approved.
+- This repo is public. The speaker asset and its standalone review viewer are approved; a full immersive site build, deployment and domain work are not.
 
 ## Working process
 
@@ -30,6 +30,12 @@ A separate site for people who want to spend time getting to know who Harshit is
 4. Design desktop and mobile
 5. Build a preview, after his go-ahead
 6. QA and launch on its own domain, after approval
+
+### Portfolio roadmap: speaker story
+
+- [x] Build a rotatable reference model of the Pixbeat speaker.
+- [x] Add the approved two-sided Pixbeat hanging tag and popup entry point.
+- [ ] Harshit to supply the Pixbeat dropshipping-venture popup contents later. The popup remains placeholder copy until provided.
 
 ## Raw material (from Harshit's own answers)
 
@@ -69,7 +75,8 @@ Harshit wants to take real products and objects around him into the digital worl
 - Not everything needs to be 3D. Options per object: a cut-out photo that opens, tilts or reveals a story; a few photographed views; a 3D model if rotating and inspecting really matters.
 - No 3D capture is promised.
 - Prefer his actual objects over decorative props.
-- First object and photo: not chosen yet.
+- First object: the Pixbeat speaker. Its reference model and standalone viewer are in [`assets/Pixbeat_Speaker/`](assets/Pixbeat_Speaker/README.md).
+- Approved branding: a clothes-style tag at the right strap attachment, original Pixbeat logo on both faces. Clicking it opens the venture popup. The current pose is fixed and the popup copy is a placeholder.
 
 Assets live in [`assets/`](assets/README.md).
 
@@ -83,7 +90,7 @@ Assets live in [`assets/`](assets/README.md).
 
 ## Open questions
 
-- Which object comes first, and what is its story?
+- Pixbeat popup story: Harshit will supply the content later; keep the placeholder until then.
 - Which concepts does he actually want?
 - Which real material (poems, D&D writing, F1 article) can be used?
 - Art style and overall world: still open.

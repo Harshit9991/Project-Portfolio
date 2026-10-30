@@ -2,7 +2,7 @@
 
 Home for digitised real-world objects and other media for Project: Portfolio.
 
-Nothing has been added yet. The first object and photo are still to be chosen.
+First asset: [Pixbeat speaker](Pixbeat_Speaker/README.md), with its reference model, approved two-sided hanging tag, standalone viewer and cleaned references. The venture popup content is pending from Harshit.
 
 Suggested layout once assets exist:
 

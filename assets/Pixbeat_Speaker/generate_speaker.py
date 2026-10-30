@@ -121,7 +121,58 @@ start=len(V)
 box(0,-.8,0,.18,1.1,.03,.05,2);box(.5,-1.9,0,.65,.2,.03,.04,2)
 for i in range(start,len(V)):
  x,y,z=V[i];V[i]=[5.76+z,y,x]
-data={'vertices':V,'faces':F,'materials':M}
+# Retail hang tag: original geometry, logo reconstructed from supplied source.
+tag_start=len(V)
+M.extend([('Tag paper',[.94,.91,.84,1],0,.9),('Cotton cord',[.78,.74,.64,1],0,.95)])
+cardmat=len(M)-2;cordmat=len(M)-1
+# Flat card slightly clockwise, clear of the front controls.
+TC=(7.75,-.05,2.25);ANG=-.12
+ca=math.cos(ANG);sa=math.sin(ANG)
+def tagp(x,y,z):return [TC[0]+x*ca-y*sa,TC[1]+x*sa+y*ca,TC[2]+z]
+start=len(V);box(0,0,0,1.85,2.65,.07,.10,cardmat)
+for i in range(start,len(V)):V[i]=tagp(*V[i])
+# Eyelet sits in the top edge, visible from either face.
+for side in (-1,1):
+ vv=[];ff=[]
+ for r in (.105,.055):
+  vv.extend([tagp(r*math.cos(i*math.tau/24),1.11+r*math.sin(i*math.tau/24),side*.041) for i in range(24)])
+ for i in range(24):
+  j=(i+1)%24;ff.extend([(i,j,24+j),(i,24+j,24+i)])
+ mesh(vv,ff,cordmat)
+ cylinder(TC[0]-1.11*sa,TC[1]+1.11*ca,TC[2],.054,.084,2,24)
+def cord(a,b,r=.027):
+ # Tube segment, arbitrary direction.
+ d=[b[i]-a[i] for i in range(3)];l=math.sqrt(sum(x*x for x in d));d=[x/l for x in d]
+ u=[-d[1],d[0],0];ul=math.hypot(*u);u=[x/ul for x in u];v=[d[1]*u[2]-d[2]*u[1],d[2]*u[0]-d[0]*u[2],d[0]*u[1]-d[1]*u[0]]
+ vv=[[p[i]+r*(u[i]*math.cos(j*math.tau/8)+v[i]*math.sin(j*math.tau/8)) for i in range(3)] for p in (a,b) for j in range(8)]
+ ff=[]
+ for j in range(8):k=(j+1)%8;ff.extend([(j,k,8+k),(j,8+k,8+j)])
+ mesh(vv,ff,cordmat)
+points=[[5.78,1.72,.1],[6.42,2.05,.75],[7.4,1.72,1.6],tagp(0,1.11,.07)]
+for a,b in zip(points,points[1:]):cord(a,b)
+# Two outward-reading logos, no photo reflection or stock reference texture.
+im=Image.open(root+'/logo-reference.jpg').convert('RGB')
+# Supplied mark is circular within a near-square white field.
+w,h=im.size;im=im.crop((int(w*.06),int(h*.06),int(w*.94),int(h*.94))).resize((128,128)).quantize(colors=48,method=2)
+pal=im.getpalette();mats={}
+for ix in set(im.getdata()):
+ rgb=pal[ix*3:ix*3+3];mats[ix]=len(M);M.append(('Logo ink '+str(ix),[(c/255)**2.2 for c in rgb]+[1],0,.85))
+for side in (-1,1):
+ for row in range(128):
+  col=0
+  while col<128:
+   ix=im.getpixel((col,row));end=col+1
+   while end<128 and im.getpixel((end,row))==ix:end+=1
+   rgb=pal[ix*3:ix*3+3]
+   if min(rgb)<220:
+    x0=(col/128-.5)*1.58;x1=(end/128-.5)*1.58;y0=(.5-row/128)*1.58-.12;y1=(.5-(row+1)/128)*1.58-.12
+    vv=[tagp(side*x0,y0,side*.042),tagp(side*x1,y0,side*.042),tagp(side*x1,y1,side*.042),tagp(side*x0,y1,side*.042)]
+    mesh(vv,[(0,1,2),(0,2,3)],mats[ix])
+   col=end
+# Tag face outlines used for depth-aware hit testing.
+tag_corners=[tagp(x,y,z) for z in (-.046,.046) for x,y in [(-.925,-1.325),(.925,-1.325),(.925,1.325),(-.925,1.325)]]
+
+data={'vertices':V,'faces':F,'materials':M,'tagStart':tag_start,'tagCorners':tag_corners}
 open(root+'/model.json','w').write(json.dumps(data,separators=(',',':')))
 # Standard glTF binary in metres, material meshes separated.
 blob=bytearray();views=[];acc=[];prims=[]
@@ -133,11 +184,12 @@ pv=add(struct.pack('<%sf'%len(pos),*pos),34962)
 acc.append({'bufferView':pv,'componentType':5126,'count':len(V),'type':'VEC3','min':[min(p[i] for p in V)*.01 for i in range(3)],'max':[max(p[i] for p in V)*.01 for i in range(3)]})
 for m in range(len(M)):
  inds=[i for a,b,c,mi in F if mi==m for i in (a,b,c)]
+ if not inds:continue
  iv=add(struct.pack('<%sI'%len(inds),*inds),34963);ai=len(acc);acc.append({'bufferView':iv,'componentType':5125,'count':len(inds),'type':'SCALAR'})
  prims.append({'attributes':{'POSITION':0},'indices':ai,'material':m})
 g={'asset':{'version':'2.0','generator':'Speaker reference study'},'scene':0,'scenes':[{'nodes':[0]}],'nodes':[{'mesh':0,'name':'Speaker - reference model'}],'meshes':[{'primitives':prims}],'materials':[{'name':name,'pbrMetallicRoughness':{'baseColorFactor':color,'metallicFactor':metal,'roughnessFactor':rough},'doubleSided':True} for name,color,metal,rough in M],'buffers':[{'byteLength':len(blob)}],'bufferViews':views,'accessors':acc}
 j=json.dumps(g,separators=(',',':')).encode();j+=b' '*((-len(j))%4);blob+=b'\0'*((-len(blob))%4)
 glb=struct.pack('<III',0x46546c67,2,12+8+len(j)+8+len(blob))+struct.pack('<II',len(j),0x4e4f534a)+j+struct.pack('<II',len(blob),0x004e4942)+blob
-open(root+'/speaker-reference-v2.glb','wb').write(glb)
+open(root+'/speaker-reference-v3-tag.glb','wb').write(glb)
 open(root+'/modelDownload.ts','w').write('export const modelData="data:model/gltf-binary;base64,'+base64.b64encode(glb).decode()+'";')
 print('vertices',len(V),'triangles',len(F),'GLB bytes',len(glb))
